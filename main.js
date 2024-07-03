@@ -274,6 +274,7 @@ async function arena_execute_pab(slide) {
 			triggers_count++
 		}
 		//
+		console.log("Arena: [" + arena_state + "] RESET scheduled clips")
 		arena_scheduled_clip = null
 	}
 	console.log("\n")
@@ -414,7 +415,7 @@ async function propresenter_request_presentation(uuid = 'active', attempt = 0) {
 }
 
 async function propresenter_presentation_trigger_index(trigger) {
-	//console.log(trigger)
+	console.log(trigger)
 	if (!trigger.presentationPath) {
 		console.error("ProPresenter: [" + propresenter_state + "] presentationPath unknown", trigger)
 		return
@@ -485,13 +486,17 @@ async function propresenter_connect() {
 		}
 
 		if (data.includes('"action":"presentationTriggerIndex"')) {
+			
 			console.log("\n\n\n\n\nProPresenter: [" + propresenter_state + "] presentationTriggerIndex")
-			return propresenter_presentation_trigger_index(JSON.parse(data));
+			let trigger = JSON.parse(data)
+			trigger.clearText = false
+			return propresenter_presentation_trigger_index(trigger);
 		}
 
-		if (data.includes('"action":"clearText"')) {
+		if (data.includes('"action":"clearText"') && propresenter_data && propresenter_data.trigger && !propresenter_data.trigger.clearText) {
+			propresenter_data.trigger.clearText = true
 			console.log("\n\n\n\n\nProPresenter: [" + propresenter_state + "] clearText")
-			return arena_execute_pab({ text: '' });
+			return arena_execute_pab({ txt: '' });
 		}
 
 		return;
