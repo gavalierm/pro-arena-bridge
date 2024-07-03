@@ -489,6 +489,11 @@ async function propresenter_connect() {
 			return propresenter_presentation_trigger_index(JSON.parse(data));
 		}
 
+		if (data.includes('"action":"clearText"')) {
+			console.log("\n\n\n\n\nProPresenter: [" + propresenter_state + "] clearText")
+			return arena_execute_pab({ text: '' });
+		}
+
 		return;
         
 	});
