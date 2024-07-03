@@ -2,6 +2,7 @@ import fs from 'fs';
 import fetch from 'node-fetch'
 import WebSocket from 'ws';
 import Gun from "gun";
+import { resourceUsage } from 'process';
 
 //
 let config = readConfiguration()
@@ -125,7 +126,7 @@ async function arena_update_clip(clip, text) {
 		if (config.arena.by_index && config.arena.by_index === true) {
 			path = 'http://' + config.arena.host + ':' + config.arena.port + '/api/v1' + '/composition/layers/' + clip.layer_postition + '/clips/' + clip.clip_position
 		}
-		console.log("Arena: [" + arena_state + "] Update clip", path);
+		//console.log("Arena: [" + arena_state + "] Update clip", path);
 		const response = await fetch(path, obj);
 		//const response = await fetch('http://' + config.arena.host + ':' + config.arena.port + '/api/v1' + arena_path_clip_by_id + '/' + id + '', obj);
 		//const response = await fetch('https://api.github.com/users/github');
@@ -397,15 +398,16 @@ async function propresenter_parse_presentation_data(data) {
 
 async function propresenter_request_presentation(uuid = 'active', attempt = 0) {
 	console.info("ProPresenter: [" + propresenter_state + "] propresenter_request_presentation")
+	if (attempt < 2) {
+		console.error("ProPresenter: TOO MANY ATTEMPTS on propresenter_request_presentation")
+		return
+	}
 	try {
 		const response = await fetch('http://' + config.propresenter.host + ':' + config.propresenter.port + '/v1/presentation/' + uuid + '?chunked=false');
 		//const response = await fetch('https://api.github.com/users/github');
 		if (!response.ok) {
 			console.log("ProPresenter: [" + propresenter_state + "] presentation_request not OK");
-			if (attempt < 2) {
-				return propresenter_request_presentation(uuid, attempt++);
-			}
-			return;
+			return propresenter_request_presentation(uuid, attempt++);
 		}
 		let data = await response.json();
 		if (!data || data == undefined) {
@@ -416,7 +418,7 @@ async function propresenter_request_presentation(uuid = 'active', attempt = 0) {
 		return propresenter_parse_presentation_data(data);
 	} catch (error) {
 		console.log("ProPresenter: [" + propresenter_state + "] presentation_request error", error);
-		return;
+		return propresenter_request_presentation(uuid, attempt++);
 	}
 }
 

@@ -2,14 +2,14 @@
   "arena": {
     "host": "localhost",
     "port": 8090,
-    "pass": "not used"
+    "trigger_delay": 50,
+    "by_index": false
   },
   "propresenter": {
     "enabled": true,
     "host": "localhost",
     "port": 1024,
-    "pass": "stage_default",
-    "presentation_request": true
+    "pass": "observe"
   },
   "gun_overlays": {
     "enabled": false,
