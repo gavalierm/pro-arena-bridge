@@ -112,8 +112,8 @@ async function gun_overlays_parse_slide(data) {
 	return execute_pab_slide(slide)
 }
 
-async function arena_update_clip(id, text) {
-	//console.log("arena_update_clip", id)
+async function arena_update_clip(clip, text) {
+	//console.log("arena_update_clip", clip)
 	let obj = {
 		method: 'PUT',
 		body: JSON.stringify({ "video": { "sourceparams": { "Text": text } } }),
@@ -121,10 +121,16 @@ async function arena_update_clip(id, text) {
 	}
 
 	try {
-		const response = await fetch('http://' + config.arena.host + ':' + config.arena.port + '/api/v1' + arena_path_clip_by_id + '/' + id + '', obj);
+		let path = 'http://' + config.arena.host + ':' + config.arena.port + '/api/v1' + '/composition/clips/by-id/' + clip.id
+		if (config.arena.by_index && config.arena.by_index === true) {
+			path = 'http://' + config.arena.host + ':' + config.arena.port + '/api/v1' + '/composition/layers/' + clip.layer_postition + '/clips/' + clip.clip_position
+		}
+		console.log("Arena: [" + arena_state + "] Update clip", path);
+		const response = await fetch(path, obj);
+		//const response = await fetch('http://' + config.arena.host + ':' + config.arena.port + '/api/v1' + arena_path_clip_by_id + '/' + id + '', obj);
 		//const response = await fetch('https://api.github.com/users/github');
 		if (!response.ok) {
-			console.error("Arena: [" + arena_state + "] PUT failed", id, obj);
+			console.error("Arena: [" + arena_state + "] PUT failed", clip.id, obj);
 			return;
 			//return arena_reconnect();
 		}
@@ -223,7 +229,7 @@ async function arena_execute_pab(slide) {
 					// box is wanted but not present, clear clip
 					console.log("Arena: [" + arena_state + "] Segment [ %d ] CLEAR [%s, %s]\n", clip.params.box, clip.layer_name, clip.clip_name)
 					clear_count++
-					arena_update_clip(clip.id, '')
+					arena_update_clip(clip, '')
 					continue;
 				}
 			}
@@ -255,13 +261,13 @@ async function arena_execute_pab(slide) {
 			if (text_for_clip == undefined) {
 				console.warn("Arena: [" + arena_state + "] UNDEFINED TEXT [%s, %s]\n", clip.layer_name, clip.clip_name)
 				clear_count++
-				arena_update_clip(clip.id, '')
+				arena_update_clip(clip, '')
 				continue;
 			}
 
 			//update clip
 			update_count++
-			arena_update_clip(clip.id, text_for_clip)
+			arena_update_clip(clip, text_for_clip)
 
 		}
 		if (arena_scheduled_clip) {
@@ -486,7 +492,6 @@ async function propresenter_connect() {
 		}
 
 		if (data.includes('"action":"presentationTriggerIndex"')) {
-			
 			console.log("\n\n\n\n\nProPresenter: [" + propresenter_state + "] presentationTriggerIndex")
 			let trigger = JSON.parse(data)
 			trigger.clearText = false
@@ -566,9 +571,14 @@ async function arena_execute_pab_trigger(clip, connect = true) {
 
 	try {
 		var response = null;
+		//console.log(clip)
 		if (connect) {
 			console.log("Arena: [" + arena_state + "] Trigger clip", clip.clip_name);
-			response = await fetch('http://' + config.arena.host + ':' + config.arena.port + '/api/v1' + arena_path_clip_by_id + '/' + clip.id + '/connect', { method: 'POST', body: '' });
+			let path = 'http://' + config.arena.host + ':' + config.arena.port + '/api/v1' + '/composition/clips/by-id/' + clip.id + '/connect'
+			if (config.arena.by_index && config.arena.by_index === true) {
+				path = 'http://' + config.arena.host + ':' + config.arena.port + '/api/v1' + '/composition/layers/' + clip.layer_postition + '/clips/' + clip.clip_position + '/connect'
+			}
+			response = await fetch(path, { method: 'POST', body: '' });
 		} else {
 			console.log("Arena: [" + arena_state + "] CLEAR WHOLE LAYER?????");
 			// /composition/layers/by-id/{layer-id}/clear
