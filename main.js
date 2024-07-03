@@ -398,7 +398,7 @@ async function propresenter_parse_presentation_data(data) {
 
 async function propresenter_request_presentation(uuid = 'active', attempt = 0) {
 	console.info("ProPresenter: [" + propresenter_state + "] propresenter_request_presentation")
-	if (attempt < 2) {
+	if (attempt > 2) {
 		console.error("ProPresenter: TOO MANY ATTEMPTS on propresenter_request_presentation")
 		return
 	}
