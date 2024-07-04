@@ -500,10 +500,14 @@ async function propresenter_connect() {
 			return propresenter_presentation_trigger_index(trigger);
 		}
 
-		if (data.includes('"action":"clearText"') && propresenter_data && propresenter_data.trigger && !propresenter_data.trigger.clearText) {
-			propresenter_data.trigger.clearText = true
-			console.log("\n\n\n\n\nProPresenter: [" + propresenter_state + "] clearText")
-			return arena_execute_pab({ txt: '' });
+		if (data.includes('"action":"clearText"') || (data.includes('"clockIndex":0') && data.includes('"action":"clockResetIndex"'))) {
+			if (propresenter_data && propresenter_data.trigger && !propresenter_data.trigger.clearText) {
+				propresenter_data.trigger.clearText = true
+				console.log("\n\n\n\n\nProPresenter: [" + propresenter_state + "] clearText")
+				return arena_execute_pab({ txt: '' });
+			}
+			console.log("\n\n\n\n\nProPresenter: [" + propresenter_state + "] clearText performed but NO DATA")
+			return
 		}
 
 		return;
