@@ -18,7 +18,7 @@ var arena_check_timeout;
 var arena_cycle = false;
 var arena = []
 //
-
+const gun_sup_array = ["0", "1", "2", "3", "4", "5", "6", "7", "9", "0", ") "]
 
 // run app
 propresenter_connect()
@@ -713,12 +713,12 @@ function perform_manipulation(text_for_clip, clip) {
 			//console.log(m)
 			let n = '';
 			for (var i = 0; i < m[1].length; i++) {
-				n = n + sup_array[parseInt(m[1][i], 10)]
+				n = n + gun_sup_array[parseInt(m[1][i], 10)]
 			}
 			//let regex = new RegExp('.*\{\{\{\{' + m[1] + '\}\}\}\}.*', 'g');
 			let regex = new RegExp('\@' + m[1] + '\@', 'g');
 			//console.log(regex)
-			text_for_clip = text_for_clip.replaceAll(regex, n + sup_array[10]);
+			text_for_clip = text_for_clip.replaceAll(regex, n + gun_sup_array[10]);
 
 			//console.log(m[1], n, text_for_clip);
 		}
