@@ -110,7 +110,7 @@ async function gun_overlays_parse_slide(data) {
 		slide.segments = parse_slide_segments(split)
 	}
 	//console.log(slide.current);
-	return execute_pab_slide(slide)
+	return arena_execute_pab(slide)
 }
 
 async function arena_update_clip(clip, text) {
