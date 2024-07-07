@@ -67,7 +67,7 @@ async function gun_overlays_parse_slide(data) {
 		return;
 	}
 	//
-	//console.log("GUUUUUUUUUUUN\n", data)
+	console.log("\n\n\nGUUUUUUUUUUUN\n\n\n", data)
 
 	let text = ''
     
@@ -109,7 +109,7 @@ async function gun_overlays_parse_slide(data) {
 	if (split.length > 1) {
 		slide.segments = parse_slide_segments(split)
 	}
-	//console.log(slide.current);
+	console.log("\n\n\nGUUUUUUUUUUUN\n\n\n", slide);
 	return arena_execute_pab(slide)
 }
 
