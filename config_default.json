@@ -2,10 +2,12 @@
   "arena": {
     "host": "localhost",
     "port": 8090,
-    "pass": "not used"
+    "pass": "not used",
+    "clipA": { "layer": 4, "column": 4 },
+    "clipB": { "layer": 4, "column": 5 }
   },
   "propresenter": {
-    "enabled": true,
+    "enabled": false,
     "host": "localhost",
     "port": 1024,
     "pass": "stage_default",
@@ -16,5 +18,10 @@
     "peer": "https://gun.filiphanes.sk/gun",
     "service": "bible",
     "namespace": "default_namespace"
+  },
+  "lenverse": {
+    "enabled": true,
+    "host": "127.0.0.1",
+    "port": 5005
   }
 }
